@@ -3,10 +3,571 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SmartPayCalculator</title>
+  <title>Hourly to Salary Calculator | SmartPayCalculator</title>
+  <meta name="description" content="Convert hourly wage to annual salary (and monthly/weekly pay). Fast, simple, and mobile-friendly." />
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --card: rgba(255,255,255,0.06);
+      --card2: rgba(255,255,255,0.08);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.70);
+      --line: rgba(255,255,255,0.12);
+      --shadow: 0 18px 50px rgba(0,0,0,0.35);
+      --radius: 18px;
+      --max: 980px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% -10%, rgba(99,102,241,0.35), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(34,197,94,0.22), transparent 60%),
+        radial-gradient(900px 600px at 50% 120%, rgba(59,130,246,0.18), transparent 60%),
+        var(--bg);
+      min-height:100vh;
+      line-height:1.45;
+    }
+
+    a{color:inherit}
+    .wrap{max-width: var(--max); margin: 0 auto; padding: 28px 18px 56px;}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:14px; padding: 10px 0 18px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; text-decoration:none;
+      font-weight:800; letter-spacing:0.2px;
+    }
+    .logo{
+      width:34px; height:34px; border-radius:10px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.9), rgba(34,197,94,0.7));
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      display:inline-block;
+    }
+    .pill{
+      font-size: 12px; color: var(--muted);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      padding: 6px 10px;
+      border-radius: 999px;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    header{
+      padding: 10px 0 18px;
+    }
+    h1{
+      font-size: clamp(28px, 4vw, 44px);
+      line-height:1.08;
+      margin: 10px 0 10px;
+      letter-spacing:-0.6px;
+    }
+    .sub{
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 70ch;
+      margin: 0 0 14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+    @media (max-width: 860px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.03));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding: 16px 16px 10px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+    }
+    .card .hd h2{
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.2px;
+    }
+    .card .hd .hint{
+      margin: 2px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .card .bd{padding: 16px}
+
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 520px){
+      .row{grid-template-columns:1fr}
+    }
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    input, select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      outline: none;
+    }
+    input:focus, select:focus{
+      border-color: rgba(99,102,241,0.6);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
+    }
+
+    .seg{
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-bottom: 14px;
+    }
+    .seg button{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .seg button[aria-pressed="true"]{
+      border-color: rgba(34,197,94,0.6);
+      background: rgba(34,197,94,0.14);
+    }
+
+    .results{
+      display:grid;
+      gap: 10px;
+    }
+    .kpi{
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .kpi .lbl{color: var(--muted); font-size: 12px; margin: 0}
+    .kpi .val{
+      margin: 2px 0 0;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+    .kpi .mini{
+      font-family: var(--mono);
+      color: rgba(255,255,255,0.70);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .note{
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section{
+      margin-top: 18px;
+      padding: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .section h3{
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+    .section p, .section li{
+      color: var(--muted);
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+    .section ul{margin: 0 0 10px 18px; padding:0}
+    .formula{
+      font-family: var(--mono);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      overflow:auto;
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+    }
+
+    .faq details{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 12px 12px;
+      margin: 10px 0;
+    }
+    .faq summary{
+      cursor:pointer;
+      font-weight: 700;
+      color: rgba(255,255,255,0.90);
+      list-style: none;
+    }
+    .faq summary::-webkit-details-marker{display:none}
+    .footer{
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 12px;
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
 </head>
+
 <body>
-  <h1>SmartPayCalculator.com</h1>
-  <p>Site is live. Calculator coming next.</p>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="#">
+        <span class="logo" aria-hidden="true"></span>
+        <span>SmartPayCalculator</span>
+      </a>
+      <span class="badge" title="This page was recently updated">
+        Updated <span id="updatedDate">today</span>
+      </span>
+    </div>
+
+    <header>
+      <h1>Hourly to Salary Calculator</h1>
+      <p class="sub">
+        Convert an hourly wage to annual salary (plus monthly and weekly pay). Fast, simple, and mobile-friendly.
+        Use the toggle to convert in either direction.
+      </p>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <div class="hd">
+          <div>
+            <h2>Calculator</h2>
+            <p class="hint">No login. No clutter. Instant results.</p>
+          </div>
+          <a class="pill" href="#how">How it works</a>
+        </div>
+
+        <div class="bd">
+          <div class="seg" role="group" aria-label="Conversion mode">
+            <button id="modeHourly" type="button" aria-pressed="true">Hourly → Salary</button>
+            <button id="modeSalary" type="button" aria-pressed="false">Salary → Hourly</button>
+          </div>
+
+          <div class="row" style="margin-bottom:12px;">
+            <div id="hourlyWrap">
+              <label for="hourlyRate">Hourly rate</label>
+              <input id="hourlyRate" inputmode="decimal" placeholder="e.g., 22.50" />
+            </div>
+
+            <div id="salaryWrap" style="display:none;">
+              <label for="annualSalary">Annual salary</label>
+              <input id="annualSalary" inputmode="decimal" placeholder="e.g., 55000" />
+            </div>
+
+            <div>
+              <label for="hoursPerWeek">Hours per week</label>
+              <input id="hoursPerWeek" inputmode="decimal" value="40" />
+            </div>
+
+            <div>
+              <label for="weeksPerYear">Weeks per year</label>
+              <input id="weeksPerYear" inputmode="decimal" value="52" />
+            </div>
+          </div>
+
+          <p class="note">
+            Tip: If you take unpaid time off, reduce “Weeks per year” (for example, 50 instead of 52).
+          </p>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="hd">
+          <div>
+            <h2>Results</h2>
+            <p class="hint">Calculated in real time as you type.</p>
+          </div>
+          <span class="pill" id="resultStatus">Ready</span>
+        </div>
+
+        <div class="bd">
+          <div class="results">
+            <div class="kpi">
+              <div>
+                <p class="lbl">Annual</p>
+                <div class="val" id="annualOut">$0</div>
+                <div class="mini" id="annualMini"></div>
+              </div>
+            </div>
+
+            <div class="kpi">
+              <div>
+                <p class="lbl">Monthly</p>
+                <div class="val" id="monthlyOut">$0</div>
+                <div class="mini" id="monthlyMini"></div>
+              </div>
+            </div>
+
+            <div class="kpi">
+              <div>
+                <p class="lbl">Weekly</p>
+                <div class="val" id="weeklyOut">$0</div>
+                <div class="mini" id="weeklyMini"></div>
+              </div>
+            </div>
+
+            <div class="kpi" id="hourlyResultCard" style="display:none;">
+              <div>
+                <p class="lbl">Hourly (from salary)</p>
+                <div class="val" id="hourlyOut">$0</div>
+                <div class="mini" id="hourlyMini"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section" style="padding: 16px 0 0; border-top:none;">
+            <p style="margin:0; color:var(--muted); font-size:13px;">
+              Affiliate links may appear in the future. If we add them, we’ll clearly disclose them here.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card" id="how" style="margin-top:16px;">
+      <div class="hd">
+        <div>
+          <h2>How it works</h2>
+          <p class="hint">The simple math behind the calculator.</p>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="section" style="border-top:none; padding:0;">
+          <h3>Hourly → Salary</h3>
+          <div class="formula">
+Annual = Hourly × Hours per Week × Weeks per Year
+Monthly = Annual ÷ 12
+Weekly = Annual ÷ Weeks per Year
+          </div>
+
+          <h3 style="margin-top:14px;">Salary → Hourly</h3>
+          <div class="formula">
+Hourly = Annual Salary ÷ (Hours per Week × Weeks per Year)
+          </div>
+
+          <p style="margin-top:12px;">
+            This calculator does <strong>not</strong> include taxes or benefits. It’s meant for quick pay comparisons.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card faq" style="margin-top:16px;">
+      <div class="hd">
+        <div>
+          <h2>FAQ</h2>
+          <p class="hint">Common questions people ask.</p>
+        </div>
+      </div>
+      <div class="bd">
+        <details>
+          <summary>Does this include taxes or deductions?</summary>
+          <p>No. This shows gross pay only (before taxes, deductions, retirement, insurance, etc.).</p>
+        </details>
+        <details>
+          <summary>What if I don’t work 52 weeks per year?</summary>
+          <p>Change “Weeks per year” to match your situation. For example, 50 weeks accounts for ~2 weeks unpaid time off.</p>
+        </details>
+        <details>
+          <summary>What about overtime, bonuses, or commission?</summary>
+          <p>This tool assumes consistent hours and pay. For overtime or variable income, we can add a separate calculator later.</p>
+        </details>
+        <details>
+          <summary>Why does the monthly number look slightly “off” sometimes?</summary>
+          <p>Monthly is calculated as annual ÷ 12. Some employers pay biweekly or semi-monthly, which can differ slightly.</p>
+        </details>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>
+        <strong>Disclaimer:</strong> This tool provides general estimates and is not financial, tax, or legal advice.
+      </div>
+      <div>© <span id="year"></span> SmartPayCalculator</div>
+    </div>
+  </div>
+
+  <script>
+    // --- Utilities ---
+    const $ = (id) => document.getElementById(id);
+
+    const toNumber = (val) => {
+      if (val == null) return NaN;
+      const cleaned = String(val).replace(/[^0-9.]/g, "");
+      const num = parseFloat(cleaned);
+      return Number.isFinite(num) ? num : NaN;
+    };
+
+    const money = (n) => {
+      if (!Number.isFinite(n)) return "$0";
+      return n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    };
+
+    const money2 = (n) => {
+      if (!Number.isFinite(n)) return "$0.00";
+      return n.toLocaleString(undefined, { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    function setStatus(text){
+      $("resultStatus").textContent = text;
+    }
+
+    // --- Mode handling ---
+    let mode = "hourly"; // 'hourly' or 'salary'
+
+    function setMode(next){
+      mode = next;
+      const isHourly = mode === "hourly";
+      $("modeHourly").setAttribute("aria-pressed", String(isHourly));
+      $("modeSalary").setAttribute("aria-pressed", String(!isHourly));
+      $("hourlyWrap").style.display = isHourly ? "block" : "none";
+      $("salaryWrap").style.display = isHourly ? "none" : "block";
+      $("hourlyResultCard").style.display = isHourly ? "none" : "block";
+      setStatus("Ready");
+      calc();
+    }
+
+    $("modeHourly").addEventListener("click", () => setMode("hourly"));
+    $("modeSalary").addEventListener("click", () => setMode("salary"));
+
+    // --- Calculation ---
+    function calc(){
+      const hpw = toNumber($("hoursPerWeek").value);
+      const wpy = toNumber($("weeksPerYear").value);
+
+      // Basic validation
+      if (!Number.isFinite(hpw) || !Number.isFinite(wpy) || hpw <= 0 || wpy <= 0){
+        setStatus("Check inputs");
+        renderNa();
+        return;
+      }
+
+      if (mode === "hourly"){
+        const hr = toNumber($("hourlyRate").value);
+        if (!Number.isFinite(hr) || hr < 0){
+          setStatus("Enter hourly");
+          renderNa();
+          return;
+        }
+        const annual = hr * hpw * wpy;
+        const monthly = annual / 12;
+        const weekly = annual / wpy;
+
+        $("annualOut").textContent = money(annual);
+        $("monthlyOut").textContent = money(monthly);
+        $("weeklyOut").textContent = money(weekly);
+
+        $("annualMini").textContent = `${money2(hr)} × ${hpw} hrs × ${wpy} wks`;
+        $("monthlyMini").textContent = `${money(annual)} ÷ 12`;
+        $("weeklyMini").textContent = `${money(annual)} ÷ ${wpy}`;
+
+        setStatus("Updated");
+        return;
+      }
+
+      // salary → hourly
+      const sal = toNumber($("annualSalary").value);
+      if (!Number.isFinite(sal) || sal < 0){
+        setStatus("Enter salary");
+        renderNa();
+        return;
+      }
+
+      const hourly = sal / (hpw * wpy);
+      const monthly = sal / 12;
+      const weekly = sal / wpy;
+
+      $("annualOut").textContent = money(sal);
+      $("monthlyOut").textContent = money(monthly);
+      $("weeklyOut").textContent = money(weekly);
+
+      $("hourlyOut").textContent = money2(hourly);
+
+      $("annualMini").textContent = `Annual salary`;
+      $("monthlyMini").textContent = `${money(sal)} ÷ 12`;
+      $("weeklyMini").textContent = `${money(sal)} ÷ ${wpy}`;
+      $("hourlyMini").textContent = `${money(sal)} ÷ (${hpw} × ${wpy})`;
+
+      setStatus("Updated");
+    }
+
+    function renderNa(){
+      $("annualOut").textContent = "$0";
+      $("monthlyOut").textContent = "$0";
+      $("weeklyOut").textContent = "$0";
+      $("hourlyOut").textContent = "$0.00";
+      $("annualMini").textContent = "";
+      $("monthlyMini").textContent = "";
+      $("weeklyMini").textContent = "";
+      $("hourlyMini").textContent = "";
+    }
+
+    // live updates
+    ["hourlyRate","annualSalary","hoursPerWeek","weeksPerYear"].forEach(id=>{
+      const el = $(id);
+      el.addEventListener("input", calc);
+      el.addEventListener("change", calc);
+    });
+
+    // "Updated today" label
+    const d = new Date();
+    $("year").textContent = String(d.getFullYear());
+    $("updatedDate").textContent = d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
+
+    // initial
+    calc();
+  </script>
 </body>
 </html>
