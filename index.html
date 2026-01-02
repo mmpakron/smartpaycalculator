@@ -220,7 +220,7 @@
     }
     .switch input:checked + .slider:before{transform: translateX(18px);}
 
-    /* Custom dropdown (fixes the Windows/Chrome native select glitch) */
+    /* Custom dropdown (no native select glitches) */
     .cselect{position:relative;}
     .cselect button{
       width:100%;
@@ -270,9 +270,17 @@
     .copt .t{font-weight: 800; font-size: 13px;}
     .copt .s{font-size: 12px; color: var(--muted);}
     .copt[aria-selected="true"]{background: rgba(34,197,94,0.16);}
+
     .sr-only{
       position:absolute; width:1px; height:1px; padding:0; margin:-1px;
       overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+
+    /* Overtime layout: 2 columns on desktop, stacks nicely on mobile */
+    .otGrid{display:grid; grid-template-columns: 1fr 1fr; gap: 12px;}
+    @media (max-width: 520px){
+      .otGrid{grid-template-columns:1fr}
+      #customMultWrap{grid-column: 1 / -1;}
     }
   </style>
 </head>
@@ -354,7 +362,7 @@
             </div>
 
             <div id="overtimeFields" style="display:none; margin-top:12px;">
-              <div class="row">
+              <div class="otGrid">
                 <div>
                   <label for="overtimeHours">Overtime hours (per pay period)</label>
                   <input id="overtimeHours" inputmode="decimal" value="0" />
@@ -375,11 +383,6 @@
                 <div id="customMultWrap" style="display:none;">
                   <label for="customMultiplier">Custom multiplier</label>
                   <input id="customMultiplier" inputmode="decimal" placeholder="e.g., 1.75" />
-                </div>
-
-                <div>
-                  <label for="unused1"> </label>
-                  <input id="unused1" disabled value=" " style="opacity:.35" />
                 </div>
               </div>
 
@@ -407,10 +410,6 @@
               <div>
                 <label for="weeksPerYear2">Weeks per year</label>
                 <input id="weeksPerYear2" inputmode="decimal" value="52" />
-              </div>
-              <div>
-                <label for="unused2"> </label>
-                <input id="unused2" disabled value=" " style="opacity:.35" />
               </div>
             </div>
             <p class="note">This converts gross annual salary to an estimated hourly rate based on your hours/weeks.</p>
@@ -809,6 +808,7 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
 
     function calcSalaryToHourly(){
       const sal = toNumber($("annualSalary").value);
+
       const hpw = toNumber($("hoursPerWeek2").value);
       const wpy = toNumber($("weeksPerYear2").value);
 
@@ -844,6 +844,7 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
       "annualSalary","hoursPerWeek2","weeksPerYear2"
     ].forEach(id=>{
       const el = $(id);
+      if (!el) return;
       el.addEventListener("input", calcAll);
       el.addEventListener("change", calcAll);
     });
