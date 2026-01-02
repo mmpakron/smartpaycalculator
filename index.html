@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SmartPayCalculator | Pay & Overtime Calculators</title>
-  <meta name="description" content="Hourly to salary, salary to hourly, and optional overtime paycheck estimates with a pay period selector. Fast, simple, and mobile-friendly." />
+  <title>SmartPayCalculator | Pay Calculators</title>
+  <meta name="description" content="Hourly to salary (with optional overtime) and salary to hourly calculators. Fast, simple, and mobile-friendly." />
 
   <style>
     :root{
@@ -19,9 +19,6 @@
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
-
-    /* Fix native dropdown appearance on dark UI */
-    html { color-scheme: dark; }
 
     *{box-sizing:border-box}
     body{
@@ -39,14 +36,8 @@
 
     a{color:inherit}
     .wrap{max-width: var(--max); margin: 0 auto; padding: 28px 18px 56px;}
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:14px; padding: 10px 0 18px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:10px; text-decoration:none;
-      font-weight:800; letter-spacing:0.2px;
-    }
+    .topbar{display:flex; align-items:center; justify-content:space-between; gap:14px; padding: 10px 0 18px;}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; font-weight:800; letter-spacing:0.2px;}
     .logo{
       width:34px; height:34px; border-radius:10px;
       background: linear-gradient(135deg, rgba(99,102,241,0.9), rgba(34,197,94,0.7));
@@ -65,42 +56,22 @@
     }
 
     header{padding: 10px 0 18px;}
-    h1{
-      font-size: clamp(28px, 4vw, 44px);
-      line-height:1.08;
-      margin: 10px 0 10px;
-      letter-spacing:-0.6px;
-    }
-    .sub{
-      color: var(--muted);
-      font-size: 16px;
-      max-width: 85ch;
-      margin: 0 0 14px;
-    }
+    h1{font-size: clamp(28px, 4vw, 44px); line-height:1.08; margin: 10px 0 10px; letter-spacing:-0.6px;}
+    .sub{color: var(--muted); font-size: 16px; max-width: 85ch; margin: 0 0 14px;}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 16px;
-      margin-top: 18px;
-    }
-    @media (max-width: 860px){
-      .grid{grid-template-columns:1fr}
-    }
+    .grid{display:grid; grid-template-columns: 1.05fr 0.95fr; gap: 16px; margin-top: 18px;}
+    @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
 
     .card{
       background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.03));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      overflow: visible; /* prevents weird dropdown clipping in some browsers */
+      overflow: visible;
     }
     .card .hd{
       padding: 16px 16px 10px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 12px;
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
       border-bottom: 1px solid var(--line);
       background: rgba(255,255,255,0.03);
       border-top-left-radius: var(--radius);
@@ -108,12 +79,9 @@
     }
     .card .hd h2{margin:0; font-size:16px; letter-spacing:-0.2px;}
     .card .hd .hint{margin:2px 0 0; font-size:12px; color: var(--muted);}
-    .card .bd{padding: 16px; border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius);}
+    .card .bd{padding: 16px;}
 
-    .seg{
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-bottom: 14px;
-    }
+    .seg{display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 14px;}
     .seg button{
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.04);
@@ -121,7 +89,7 @@
       padding: 10px 12px;
       border-radius: 12px;
       cursor:pointer;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 13px;
     }
     .seg button[aria-pressed="true"]{
@@ -129,16 +97,11 @@
       background: rgba(34,197,94,0.14);
     }
 
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    @media (max-width: 520px){
-      .row{grid-template-columns:1fr}
-    }
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap: 12px;}
+    @media (max-width: 520px){ .row{grid-template-columns:1fr} }
+
     label{display:block; font-size:12px; color: var(--muted); margin-bottom:6px;}
-    input, select{
+    input{
       width:100%;
       padding: 12px 12px;
       border-radius: 12px;
@@ -147,7 +110,7 @@
       color: var(--text);
       outline:none;
     }
-    input:focus, select:focus{
+    input:focus{
       border-color: rgba(99,102,241,0.6);
       box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
     }
@@ -168,9 +131,7 @@
       border-radius: 14px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.04);
-      display:flex;
-      justify-content:space-between;
-      gap: 12px;
+      display:flex; justify-content:space-between; gap: 12px;
     }
     .kpi .lbl{color: var(--muted); font-size: 12px; margin: 0}
     .kpi .val{margin:2px 0 0; font-size: 20px; font-weight: 900; letter-spacing:-0.2px;}
@@ -179,7 +140,7 @@
     .note{margin-top: 12px; color: var(--muted); font-size: 13px;}
     .section{margin-top: 18px; padding: 16px; border-top: 1px solid var(--line);}
     .section h3{margin: 0 0 10px; font-size: 15px;}
-    .section p, .section li{color: var(--muted); margin: 0 0 10px; font-size: 14px;}
+    .section p{color: var(--muted); margin: 0 0 10px; font-size: 14px;}
     .formula{
       font-family: var(--mono);
       background: rgba(255,255,255,0.04);
@@ -219,12 +180,7 @@
       padding-top: 16px;
     }
 
-    .divider{
-      height:1px;
-      background: var(--line);
-      margin: 14px 0;
-    }
-
+    /* Toggle */
     .toggleRow{
       display:flex;
       align-items:center;
@@ -236,27 +192,11 @@
       border-radius: 14px;
       margin-top: 10px;
     }
-    .toggleRow .tText{
-      display:flex; flex-direction:column; gap:2px;
-    }
-    .toggleRow .tTitle{
-      font-weight: 900;
-      font-size: 13px;
-    }
-    .toggleRow .tSub{
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .switch{
-      position:relative;
-      width: 46px;
-      height: 28px;
-      flex: 0 0 auto;
-    }
-    .switch input{
-      opacity:0;
-      width:0; height:0;
-    }
+    .toggleRow .tText{display:flex; flex-direction:column; gap:2px;}
+    .toggleRow .tTitle{font-weight: 900; font-size: 13px;}
+    .toggleRow .tSub{font-size: 12px; color: var(--muted);}
+    .switch{position:relative; width: 46px; height: 28px; flex: 0 0 auto;}
+    .switch input{opacity:0; width:0; height:0;}
     .slider{
       position:absolute; inset:0;
       cursor:pointer;
@@ -278,8 +218,61 @@
       background: rgba(34,197,94,0.20);
       border-color: rgba(34,197,94,0.55);
     }
-    .switch input:checked + .slider:before{
-      transform: translateX(18px);
+    .switch input:checked + .slider:before{transform: translateX(18px);}
+
+    /* Custom dropdown (fixes the Windows/Chrome native select glitch) */
+    .cselect{position:relative;}
+    .cselect button{
+      width:100%;
+      text-align:left;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .cselect button:focus{
+      outline:none;
+      border-color: rgba(99,102,241,0.6);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
+    }
+    .chev{opacity:.85; font-size: 12px;}
+    .coptions{
+      position:absolute;
+      left:0; right:0;
+      top: calc(100% + 6px);
+      z-index: 9999;
+      border: 1px solid var(--line);
+      background: rgba(10,16,30,0.98);
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+      overflow:hidden;
+      display:none;
+      max-height: 240px;
+      overflow-y:auto;
+    }
+    .coptions.open{display:block;}
+    .copt{
+      padding: 10px 12px;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .copt:first-child{border-top:none;}
+    .copt:hover{background: rgba(255,255,255,0.06);}
+    .copt .t{font-weight: 800; font-size: 13px;}
+    .copt .s{font-size: 12px; color: var(--muted);}
+    .copt[aria-selected="true"]{background: rgba(34,197,94,0.16);}
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
     }
   </style>
 </head>
@@ -335,14 +328,17 @@
                 <label for="weeksPerYear">Weeks per year</label>
                 <input id="weeksPerYear" inputmode="decimal" value="52" />
               </div>
+
               <div>
-                <label for="payPeriod">Pay period (for overtime estimate)</label>
-                <select id="payPeriod">
-                  <option value="weekly">Weekly (52/yr)</option>
-                  <option value="biweekly">Biweekly (26/yr)</option>
-                  <option value="semimonthly">Semi-monthly (24/yr)</option>
-                  <option value="monthly">Monthly (12/yr)</option>
-                </select>
+                <label>Pay period (for overtime estimate)</label>
+                <div class="cselect" data-name="payPeriod">
+                  <span class="sr-only" id="payPeriodLabel">Pay period</span>
+                  <button type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="payPeriodLabel">
+                    <span class="cvalue" id="payPeriodValue">Weekly (52/yr)</span>
+                    <span class="chev">▾</span>
+                  </button>
+                  <div class="coptions" role="listbox" aria-label="Pay period options"></div>
+                </div>
               </div>
             </div>
 
@@ -363,18 +359,24 @@
                   <label for="overtimeHours">Overtime hours (per pay period)</label>
                   <input id="overtimeHours" inputmode="decimal" value="0" />
                 </div>
+
                 <div>
-                  <label for="otMultiplier">Overtime multiplier</label>
-                  <select id="otMultiplier">
-                    <option value="1.5">1.5× (time and a half)</option>
-                    <option value="2">2× (double time)</option>
-                    <option value="custom">Custom…</option>
-                  </select>
+                  <label>Overtime multiplier</label>
+                  <div class="cselect" data-name="otMultiplier">
+                    <span class="sr-only" id="otMultLabel">Overtime multiplier</span>
+                    <button type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="otMultLabel">
+                      <span class="cvalue" id="otMultValue">1.5× (time and a half)</span>
+                      <span class="chev">▾</span>
+                    </button>
+                    <div class="coptions" role="listbox" aria-label="Overtime multiplier options"></div>
+                  </div>
                 </div>
+
                 <div id="customMultWrap" style="display:none;">
                   <label for="customMultiplier">Custom multiplier</label>
                   <input id="customMultiplier" inputmode="decimal" placeholder="e.g., 1.75" />
                 </div>
+
                 <div>
                   <label for="unused1"> </label>
                   <input id="unused1" disabled value=" " style="opacity:.35" />
@@ -450,7 +452,6 @@
               </div>
             </div>
 
-            <!-- Only shown when overtime toggle is ON -->
             <div class="kpi" id="otPeriodCard" style="display:none;">
               <div>
                 <p class="lbl">Overtime pay (per pay period)</p>
@@ -588,18 +589,78 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
 
     function setStatus(text){ $("resultStatus").textContent = text; }
 
-    let mode = "hourly"; // hourly | salary
+    // -------- Custom dropdown (fully styled, no native select glitches) --------
+    function createCustomSelect(rootEl, options, defaultValue, onChange){
+      const btn = rootEl.querySelector("button");
+      const valueEl = rootEl.querySelector(".cvalue");
+      const list = rootEl.querySelector(".coptions");
 
-    function periodsPerYear(period){
-      switch(period){
-        case "weekly": return 52;
-        case "biweekly": return 26;
-        case "semimonthly": return 24;
-        case "monthly": return 12;
-        default: return 52;
+      let current = defaultValue;
+
+      function render(){
+        list.innerHTML = "";
+        options.forEach(opt => {
+          const div = document.createElement("div");
+          div.className = "copt";
+          div.setAttribute("role","option");
+          div.setAttribute("data-value", opt.value);
+          div.setAttribute("aria-selected", String(opt.value === current));
+          div.innerHTML = `<div class="t">${opt.title}</div>${opt.subtitle ? `<div class="s">${opt.subtitle}</div>` : ""}`;
+          div.addEventListener("click", () => {
+            set(opt.value);
+            close();
+          });
+          list.appendChild(div);
+        });
+
+        const chosen = options.find(o => o.value === current) || options[0];
+        valueEl.textContent = chosen.title;
       }
+
+      function open(){
+        list.classList.add("open");
+        btn.setAttribute("aria-expanded","true");
+      }
+
+      function close(){
+        list.classList.remove("open");
+        btn.setAttribute("aria-expanded","false");
+      }
+
+      function toggle(){
+        if (list.classList.contains("open")) close();
+        else open();
+      }
+
+      function set(v){
+        current = v;
+        render();
+        onChange?.(v);
+      }
+
+      btn.addEventListener("click", toggle);
+
+      // close on outside click
+      document.addEventListener("click", (e) => {
+        if (!rootEl.contains(e.target)) close();
+      });
+
+      // close on escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") close();
+      });
+
+      render();
+
+      return {
+        get: () => current,
+        set: (v) => set(v),
+        close
+      };
     }
 
+    // -------- Modes --------
+    let mode = "hourly"; // hourly | salary
     function showMode(next){
       mode = next;
 
@@ -619,7 +680,7 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
     $("modeHourly").addEventListener("click", () => showMode("hourly"));
     $("modeSalary").addEventListener("click", () => showMode("salary"));
 
-    // Overtime toggle reveal
+    // -------- Overtime toggle --------
     $("includeOvertime").addEventListener("change", () => {
       const on = $("includeOvertime").checked;
       $("overtimeFields").style.display = on ? "block" : "none";
@@ -628,12 +689,42 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
       calcAll();
     });
 
-    // Multiplier custom field
-    $("otMultiplier").addEventListener("change", () => {
-      const isCustom = $("otMultiplier").value === "custom";
-      $("customMultWrap").style.display = isCustom ? "block" : "none";
-      calcAll();
-    });
+    function periodsPerYear(period){
+      switch(period){
+        case "weekly": return 52;
+        case "biweekly": return 26;
+        case "semimonthly": return 24;
+        case "monthly": return 12;
+        default: return 52;
+      }
+    }
+
+    // -------- Custom dropdown instances --------
+    const payPeriodSelect = createCustomSelect(
+      document.querySelector('.cselect[data-name="payPeriod"]'),
+      [
+        { value: "weekly", title: "Weekly (52/yr)" },
+        { value: "biweekly", title: "Biweekly (26/yr)" },
+        { value: "semimonthly", title: "Semi-monthly (24/yr)" },
+        { value: "monthly", title: "Monthly (12/yr)" }
+      ],
+      "weekly",
+      () => calcAll()
+    );
+
+    const otMultSelect = createCustomSelect(
+      document.querySelector('.cselect[data-name="otMultiplier"]'),
+      [
+        { value: "1.5", title: "1.5× (time and a half)" },
+        { value: "2", title: "2× (double time)" },
+        { value: "custom", title: "Custom…" }
+      ],
+      "1.5",
+      (v) => {
+        $("customMultWrap").style.display = (v === "custom") ? "block" : "none";
+        calcAll();
+      }
+    );
 
     function renderNaHourly(){
       $("annualOut").textContent = "$0";
@@ -664,19 +755,15 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
       const hr = toNumber($("hourlyRate").value);
       const hpw = toNumber($("hoursPerWeek").value);
       const wpy = toNumber($("weeksPerYear").value);
-      const period = $("payPeriod").value;
+      const period = payPeriodSelect.get();
 
       if (!Number.isFinite(hr) || hr < 0){ setStatus("Enter hourly"); renderNaHourly(); return; }
       if (!Number.isFinite(hpw) || !Number.isFinite(wpy) || hpw <= 0 || wpy <= 0){ setStatus("Check inputs"); renderNaHourly(); return; }
 
       const baseAnnual = hr * hpw * wpy;
 
-      // Optional overtime
       const otOn = $("includeOvertime").checked;
       let annual = baseAnnual;
-
-      let otPerPeriod = 0;
-      let periodTotal = 0;
 
       const ppy = periodsPerYear(period);
       const basePerPeriod = baseAnnual / ppy;
@@ -684,19 +771,19 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
       if (otOn){
         const otHrs = toNumber($("overtimeHours").value);
 
-        let mult = toNumber($("otMultiplier").value);
-        if ($("otMultiplier").value === "custom"){
+        let mult = toNumber(otMultSelect.get());
+        if (otMultSelect.get() === "custom"){
           mult = toNumber($("customMultiplier").value);
         }
 
         if (!Number.isFinite(otHrs) || otHrs < 0){ setStatus("Check OT hours"); renderNaHourly(); return; }
         if (!Number.isFinite(mult) || mult <= 0){ setStatus("Check multiplier"); renderNaHourly(); return; }
 
-        otPerPeriod = hr * otHrs * mult;
+        const otPerPeriod = hr * otHrs * mult;
         const otAnnual = otPerPeriod * ppy;
         annual = baseAnnual + otAnnual;
 
-        periodTotal = basePerPeriod + otPerPeriod;
+        const periodTotal = basePerPeriod + otPerPeriod;
 
         $("otPerPeriodOut").textContent = money0(otPerPeriod);
         $("otPerPeriodMini").textContent = `${money2(hr)} × ${otHrs} hrs × ${mult}×`;
@@ -752,7 +839,7 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
 
     // Live updates
     [
-      "hourlyRate","hoursPerWeek","weeksPerYear","payPeriod",
+      "hourlyRate","hoursPerWeek","weeksPerYear",
       "overtimeHours","customMultiplier",
       "annualSalary","hoursPerWeek2","weeksPerYear2"
     ].forEach(id=>{
@@ -761,12 +848,12 @@ Annual Total (estimate) = Base Annual + Overtime Annual</div>
       el.addEventListener("change", calcAll);
     });
 
-    // Updated badge + year
+    // Badge + year
     const d = new Date();
     $("year").textContent = String(d.getFullYear());
     $("updatedDate").textContent = d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
 
-    // Init visibility for OT cards
+    // Init cards hidden
     $("otPeriodCard").style.display = "none";
     $("periodTotalCard").style.display = "none";
 
