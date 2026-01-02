@@ -3,14 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hourly to Salary Calculator | SmartPayCalculator</title>
-  <meta name="description" content="Convert hourly wage to annual salary (and monthly/weekly pay). Fast, simple, and mobile-friendly." />
+  <title>SmartPayCalculator | Pay & Overtime Calculators</title>
+  <meta name="description" content="Hourly to salary, salary to hourly, and overtime paycheck calculator with pay period selector. Fast, simple, and mobile-friendly." />
 
   <style>
     :root{
       --bg: #0b1220;
       --card: rgba(255,255,255,0.06);
-      --card2: rgba(255,255,255,0.08);
       --text: rgba(255,255,255,0.92);
       --muted: rgba(255,255,255,0.70);
       --line: rgba(255,255,255,0.12);
@@ -51,19 +50,18 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
       display:inline-block;
     }
-    .pill{
-      font-size: 12px; color: var(--muted);
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
       padding: 6px 10px;
       border-radius: 999px;
-      text-decoration:none;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      font-size: 12px;
+      color: var(--muted);
       white-space:nowrap;
     }
 
-    header{
-      padding: 10px 0 18px;
-    }
+    header{padding: 10px 0 18px;}
     h1{
       font-size: clamp(28px, 4vw, 44px);
       line-height:1.08;
@@ -73,7 +71,7 @@
     .sub{
       color: var(--muted);
       font-size: 16px;
-      max-width: 70ch;
+      max-width: 80ch;
       margin: 0 0 14px;
     }
 
@@ -103,45 +101,9 @@
       border-bottom: 1px solid var(--line);
       background: rgba(255,255,255,0.03);
     }
-    .card .hd h2{
-      margin: 0;
-      font-size: 16px;
-      letter-spacing: -0.2px;
-    }
-    .card .hd .hint{
-      margin: 2px 0 0;
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .card .hd h2{margin:0; font-size:16px; letter-spacing:-0.2px;}
+    .card .hd .hint{margin:2px 0 0; font-size:12px; color: var(--muted);}
     .card .bd{padding: 16px}
-
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    @media (max-width: 520px){
-      .row{grid-template-columns:1fr}
-    }
-    label{
-      display:block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-    input, select{
-      width:100%;
-      padding: 12px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-      outline: none;
-    }
-    input:focus, select:focus{
-      border-color: rgba(99,102,241,0.6);
-      box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
-    }
 
     .seg{
       display:flex; gap:8px; flex-wrap:wrap;
@@ -154,7 +116,7 @@
       padding: 10px 12px;
       border-radius: 12px;
       cursor:pointer;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 13px;
     }
     .seg button[aria-pressed="true"]{
@@ -162,54 +124,57 @@
       background: rgba(34,197,94,0.14);
     }
 
-    .results{
+    .row{
       display:grid;
-      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
+    @media (max-width: 520px){
+      .row{grid-template-columns:1fr}
+    }
+    label{display:block; font-size:12px; color: var(--muted); margin-bottom:6px;}
+    input, select{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      outline:none;
+    }
+    input:focus, select:focus{
+      border-color: rgba(99,102,241,0.6);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.15);
+    }
+
+    .pill{
+      font-size: 12px; color: var(--muted);
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      padding: 6px 10px;
+      border-radius: 999px;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    .results{display:grid; gap: 10px;}
     .kpi{
       padding: 14px;
       border-radius: 14px;
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.04);
       display:flex;
-      align-items:flex-start;
       justify-content:space-between;
       gap: 12px;
     }
     .kpi .lbl{color: var(--muted); font-size: 12px; margin: 0}
-    .kpi .val{
-      margin: 2px 0 0;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-    }
-    .kpi .mini{
-      font-family: var(--mono);
-      color: rgba(255,255,255,0.70);
-      font-size: 12px;
-      margin-top: 6px;
-    }
+    .kpi .val{margin:2px 0 0; font-size: 20px; font-weight: 800; letter-spacing:-0.2px;}
+    .kpi .mini{font-family: var(--mono); color: rgba(255,255,255,0.70); font-size: 12px; margin-top: 6px;}
 
-    .note{
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .section{
-      margin-top: 18px;
-      padding: 16px;
-      border-top: 1px solid var(--line);
-    }
-    .section h3{
-      margin: 0 0 10px;
-      font-size: 15px;
-    }
-    .section p, .section li{
-      color: var(--muted);
-      margin: 0 0 10px;
-      font-size: 14px;
-    }
+    .note{margin-top: 12px; color: var(--muted); font-size: 13px;}
+    .section{margin-top: 18px; padding: 16px; border-top: 1px solid var(--line);}
+    .section h3{margin: 0 0 10px; font-size: 15px;}
+    .section p, .section li{color: var(--muted); margin: 0 0 10px; font-size: 14px;}
     .section ul{margin: 0 0 10px 18px; padding:0}
     .formula{
       font-family: var(--mono);
@@ -220,22 +185,24 @@
       overflow:auto;
       color: rgba(255,255,255,0.85);
       font-size: 12px;
+      white-space: pre;
     }
 
     .faq details{
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.03);
       border-radius: 14px;
-      padding: 12px 12px;
+      padding: 12px;
       margin: 10px 0;
     }
     .faq summary{
       cursor:pointer;
-      font-weight: 700;
+      font-weight: 800;
       color: rgba(255,255,255,0.90);
-      list-style: none;
+      list-style:none;
     }
     .faq summary::-webkit-details-marker{display:none}
+
     .footer{
       margin-top: 22px;
       color: var(--muted);
@@ -246,15 +213,6 @@
       gap:10px;
       border-top: 1px solid var(--line);
       padding-top: 16px;
-    }
-    .badge{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.03);
-      font-size: 12px;
-      color: var(--muted);
     }
   </style>
 </head>
@@ -272,10 +230,10 @@
     </div>
 
     <header>
-      <h1>Hourly to Salary Calculator</h1>
+      <h1>Pay & Overtime Calculators</h1>
       <p class="sub">
-        Convert an hourly wage to annual salary (plus monthly and weekly pay). Fast, simple, and mobile-friendly.
-        Use the toggle to convert in either direction.
+        Quick tools for pay comparisons: <strong>Hourly ↔ Salary</strong> and an <strong>Overtime Paycheck</strong> calculator with a pay period selector.
+        Fast, simple, and mobile-friendly.
       </p>
     </header>
 
@@ -284,42 +242,106 @@
         <div class="hd">
           <div>
             <h2>Calculator</h2>
-            <p class="hint">No login. No clutter. Instant results.</p>
+            <p class="hint">No login. Instant results. Clean and simple.</p>
           </div>
           <a class="pill" href="#how">How it works</a>
         </div>
 
         <div class="bd">
-          <div class="seg" role="group" aria-label="Conversion mode">
+          <div class="seg" role="group" aria-label="Calculator mode">
             <button id="modeHourly" type="button" aria-pressed="true">Hourly → Salary</button>
             <button id="modeSalary" type="button" aria-pressed="false">Salary → Hourly</button>
+            <button id="modeOvertime" type="button" aria-pressed="false">Overtime Pay</button>
           </div>
 
-          <div class="row" style="margin-bottom:12px;">
-            <div id="hourlyWrap">
-              <label for="hourlyRate">Hourly rate</label>
-              <input id="hourlyRate" inputmode="decimal" placeholder="e.g., 22.50" />
+          <!-- Hourly → Salary -->
+          <div id="hourlySalaryPanel">
+            <div class="row" style="margin-bottom:12px;">
+              <div>
+                <label for="hourlyRate">Hourly rate</label>
+                <input id="hourlyRate" inputmode="decimal" placeholder="e.g., 22.50" />
+              </div>
+              <div>
+                <label for="hoursPerWeek">Hours per week</label>
+                <input id="hoursPerWeek" inputmode="decimal" value="40" />
+              </div>
+              <div>
+                <label for="weeksPerYear">Weeks per year</label>
+                <input id="weeksPerYear" inputmode="decimal" value="52" />
+              </div>
+              <div>
+                <label for="unused1"> </label>
+                <input id="unused1" disabled value=" " style="opacity:.35" />
+              </div>
             </div>
-
-            <div id="salaryWrap" style="display:none;">
-              <label for="annualSalary">Annual salary</label>
-              <input id="annualSalary" inputmode="decimal" placeholder="e.g., 55000" />
-            </div>
-
-            <div>
-              <label for="hoursPerWeek">Hours per week</label>
-              <input id="hoursPerWeek" inputmode="decimal" value="40" />
-            </div>
-
-            <div>
-              <label for="weeksPerYear">Weeks per year</label>
-              <input id="weeksPerYear" inputmode="decimal" value="52" />
-            </div>
+            <p class="note">Tip: If you take unpaid time off, reduce “Weeks per year” (for example, 50 instead of 52).</p>
           </div>
 
-          <p class="note">
-            Tip: If you take unpaid time off, reduce “Weeks per year” (for example, 50 instead of 52).
-          </p>
+          <!-- Salary → Hourly -->
+          <div id="salaryHourlyPanel" style="display:none;">
+            <div class="row" style="margin-bottom:12px;">
+              <div>
+                <label for="annualSalary">Annual salary</label>
+                <input id="annualSalary" inputmode="decimal" placeholder="e.g., 55000" />
+              </div>
+              <div>
+                <label for="hoursPerWeek2">Hours per week</label>
+                <input id="hoursPerWeek2" inputmode="decimal" value="40" />
+              </div>
+              <div>
+                <label for="weeksPerYear2">Weeks per year</label>
+                <input id="weeksPerYear2" inputmode="decimal" value="52" />
+              </div>
+              <div>
+                <label for="unused2"> </label>
+                <input id="unused2" disabled value=" " style="opacity:.35" />
+              </div>
+            </div>
+            <p class="note">This converts gross annual salary to an estimated hourly rate based on your hours/weeks.</p>
+          </div>
+
+          <!-- Overtime Pay -->
+          <div id="overtimePanel" style="display:none;">
+            <div class="row" style="margin-bottom:12px;">
+              <div>
+                <label for="otHourlyRate">Hourly rate</label>
+                <input id="otHourlyRate" inputmode="decimal" placeholder="e.g., 22.50" />
+              </div>
+              <div>
+                <label for="payPeriod">Pay period</label>
+                <select id="payPeriod">
+                  <option value="weekly">Weekly (52/yr)</option>
+                  <option value="biweekly">Biweekly (26/yr)</option>
+                  <option value="semimonthly">Semi-monthly (24/yr)</option>
+                  <option value="monthly">Monthly (12/yr)</option>
+                </select>
+              </div>
+              <div>
+                <label for="regularHours">Regular hours (this pay period)</label>
+                <input id="regularHours" inputmode="decimal" value="40" />
+              </div>
+              <div>
+                <label for="overtimeHours">Overtime hours (this pay period)</label>
+                <input id="overtimeHours" inputmode="decimal" value="0" />
+              </div>
+              <div>
+                <label for="otMultiplier">Overtime multiplier</label>
+                <select id="otMultiplier">
+                  <option value="1.5">1.5× (time and a half)</option>
+                  <option value="2">2× (double time)</option>
+                  <option value="custom">Custom…</option>
+                </select>
+              </div>
+              <div id="customMultWrap" style="display:none;">
+                <label for="customMultiplier">Custom multiplier</label>
+                <input id="customMultiplier" inputmode="decimal" placeholder="e.g., 1.75" />
+              </div>
+            </div>
+
+            <p class="note">
+              Tip: Hours are per pay period (not per week). Change “Regular hours” to match your schedule.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -333,7 +355,8 @@
         </div>
 
         <div class="bd">
-          <div class="results">
+          <!-- Results: Hourly → Salary -->
+          <div id="resultsHourly" class="results">
             <div class="kpi">
               <div>
                 <p class="lbl">Annual</p>
@@ -341,7 +364,6 @@
                 <div class="mini" id="annualMini"></div>
               </div>
             </div>
-
             <div class="kpi">
               <div>
                 <p class="lbl">Monthly</p>
@@ -349,7 +371,6 @@
                 <div class="mini" id="monthlyMini"></div>
               </div>
             </div>
-
             <div class="kpi">
               <div>
                 <p class="lbl">Weekly</p>
@@ -357,12 +378,68 @@
                 <div class="mini" id="weeklyMini"></div>
               </div>
             </div>
+          </div>
 
-            <div class="kpi" id="hourlyResultCard" style="display:none;">
+          <!-- Results: Salary → Hourly -->
+          <div id="resultsSalary" class="results" style="display:none;">
+            <div class="kpi">
               <div>
-                <p class="lbl">Hourly (from salary)</p>
-                <div class="val" id="hourlyOut">$0</div>
-                <div class="mini" id="hourlyMini"></div>
+                <p class="lbl">Annual</p>
+                <div class="val" id="annualOut2">$0</div>
+                <div class="mini" id="annualMini2"></div>
+              </div>
+            </div>
+            <div class="kpi">
+              <div>
+                <p class="lbl">Monthly</p>
+                <div class="val" id="monthlyOut2">$0</div>
+                <div class="mini" id="monthlyMini2"></div>
+              </div>
+            </div>
+            <div class="kpi">
+              <div>
+                <p class="lbl">Weekly</p>
+                <div class="val" id="weeklyOut2">$0</div>
+                <div class="mini" id="weeklyMini2"></div>
+              </div>
+            </div>
+            <div class="kpi">
+              <div>
+                <p class="lbl">Hourly (estimated)</p>
+                <div class="val" id="hourlyOut2">$0.00</div>
+                <div class="mini" id="hourlyMini2"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results: Overtime -->
+          <div id="resultsOvertime" class="results" style="display:none;">
+            <div class="kpi">
+              <div>
+                <p class="lbl">Regular pay (this pay period)</p>
+                <div class="val" id="regularPayOut">$0</div>
+                <div class="mini" id="regularPayMini"></div>
+              </div>
+            </div>
+            <div class="kpi">
+              <div>
+                <p class="lbl">Overtime pay (this pay period)</p>
+                <div class="val" id="overtimePayOut">$0</div>
+                <div class="mini" id="overtimePayMini"></div>
+              </div>
+            </div>
+            <div class="kpi">
+              <div>
+                <p class="lbl">Total gross pay (this pay period)</p>
+                <div class="val" id="totalPayOut">$0</div>
+                <div class="mini" id="totalPayMini"></div>
+              </div>
+            </div>
+            <div class="kpi">
+              <div>
+                <p class="lbl">Annualized total (estimate)</p>
+                <div class="val" id="annualizedOut">$0</div>
+                <div class="mini" id="annualizedMini"></div>
               </div>
             </div>
           </div>
@@ -380,25 +457,27 @@
       <div class="hd">
         <div>
           <h2>How it works</h2>
-          <p class="hint">The simple math behind the calculator.</p>
+          <p class="hint">The simple math behind each calculator.</p>
         </div>
       </div>
       <div class="bd">
         <div class="section" style="border-top:none; padding:0;">
           <h3>Hourly → Salary</h3>
-          <div class="formula">
-Annual = Hourly × Hours per Week × Weeks per Year
+          <div class="formula">Annual = Hourly × Hours per Week × Weeks per Year
 Monthly = Annual ÷ 12
-Weekly = Annual ÷ Weeks per Year
-          </div>
+Weekly = Annual ÷ Weeks per Year</div>
 
           <h3 style="margin-top:14px;">Salary → Hourly</h3>
-          <div class="formula">
-Hourly = Annual Salary ÷ (Hours per Week × Weeks per Year)
-          </div>
+          <div class="formula">Hourly = Annual Salary ÷ (Hours per Week × Weeks per Year)</div>
+
+          <h3 style="margin-top:14px;">Overtime Pay</h3>
+          <div class="formula">Regular Pay = Hourly × Regular Hours (this pay period)
+Overtime Pay = Hourly × Overtime Hours × Multiplier
+Total Pay = Regular Pay + Overtime Pay
+Annualized = Total Pay × Pay Periods per Year</div>
 
           <p style="margin-top:12px;">
-            This calculator does <strong>not</strong> include taxes or benefits. It’s meant for quick pay comparisons.
+            These calculators show <strong>gross estimates</strong> (before taxes/deductions) and are meant for quick comparisons.
           </p>
         </div>
       </div>
@@ -414,33 +493,30 @@ Hourly = Annual Salary ÷ (Hours per Week × Weeks per Year)
       <div class="bd">
         <details>
           <summary>Does this include taxes or deductions?</summary>
-          <p>No. This shows gross pay only (before taxes, deductions, retirement, insurance, etc.).</p>
+          <p>No. All results are gross estimates (before taxes, deductions, retirement, insurance, etc.).</p>
         </details>
         <details>
-          <summary>What if I don’t work 52 weeks per year?</summary>
-          <p>Change “Weeks per year” to match your situation. For example, 50 weeks accounts for ~2 weeks unpaid time off.</p>
+          <summary>Why does monthly pay differ from biweekly or semi-monthly pay?</summary>
+          <p>Monthly is annual ÷ 12. Biweekly and semi-monthly have different pay period counts (26 vs 24), so the per-check amount differs.</p>
         </details>
         <details>
-          <summary>What about overtime, bonuses, or commission?</summary>
-          <p>This tool assumes consistent hours and pay. For overtime or variable income, we can add a separate calculator later.</p>
+          <summary>How should I use the overtime calculator?</summary>
+          <p>Select your pay period, then enter regular hours and overtime hours for that pay period. Adjust the multiplier if your employer pays different rates.</p>
         </details>
         <details>
-          <summary>Why does the monthly number look slightly “off” sometimes?</summary>
-          <p>Monthly is calculated as annual ÷ 12. Some employers pay biweekly or semi-monthly, which can differ slightly.</p>
+          <summary>Is the annualized overtime estimate accurate?</summary>
+          <p>It’s a simple estimate: (this pay period total) × (pay periods per year). If overtime varies, your annual total will vary.</p>
         </details>
       </div>
     </section>
 
     <div class="footer">
-      <div>
-        <strong>Disclaimer:</strong> This tool provides general estimates and is not financial, tax, or legal advice.
-      </div>
+      <div><strong>Disclaimer:</strong> This tool provides general estimates and is not financial, tax, or legal advice.</div>
       <div>© <span id="year"></span> SmartPayCalculator</div>
     </div>
   </div>
 
   <script>
-    // --- Utilities ---
     const $ = (id) => document.getElementById(id);
 
     const toNumber = (val) => {
@@ -450,7 +526,7 @@ Hourly = Annual Salary ÷ (Hours per Week × Weeks per Year)
       return Number.isFinite(num) ? num : NaN;
     };
 
-    const money = (n) => {
+    const money0 = (n) => {
       if (!Number.isFinite(n)) return "$0";
       return n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
     };
@@ -460,114 +536,213 @@ Hourly = Annual Salary ÷ (Hours per Week × Weeks per Year)
       return n.toLocaleString(undefined, { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
-    function setStatus(text){
-      $("resultStatus").textContent = text;
-    }
+    function setStatus(text){ $("resultStatus").textContent = text; }
 
-    // --- Mode handling ---
-    let mode = "hourly"; // 'hourly' or 'salary'
+    let mode = "hourly"; // hourly | salary | overtime
 
-    function setMode(next){
+    function showMode(next){
       mode = next;
-      const isHourly = mode === "hourly";
-      $("modeHourly").setAttribute("aria-pressed", String(isHourly));
-      $("modeSalary").setAttribute("aria-pressed", String(!isHourly));
-      $("hourlyWrap").style.display = isHourly ? "block" : "none";
-      $("salaryWrap").style.display = isHourly ? "none" : "block";
-      $("hourlyResultCard").style.display = isHourly ? "none" : "block";
+
+      // buttons
+      $("modeHourly").setAttribute("aria-pressed", String(mode === "hourly"));
+      $("modeSalary").setAttribute("aria-pressed", String(mode === "salary"));
+      $("modeOvertime").setAttribute("aria-pressed", String(mode === "overtime"));
+
+      // panels
+      $("hourlySalaryPanel").style.display = (mode === "hourly") ? "block" : "none";
+      $("salaryHourlyPanel").style.display = (mode === "salary") ? "block" : "none";
+      $("overtimePanel").style.display = (mode === "overtime") ? "block" : "none";
+
+      // results
+      $("resultsHourly").style.display = (mode === "hourly") ? "grid" : "none";
+      $("resultsSalary").style.display = (mode === "salary") ? "grid" : "none";
+      $("resultsOvertime").style.display = (mode === "overtime") ? "grid" : "none";
+
       setStatus("Ready");
-      calc();
+      calcAll();
     }
 
-    $("modeHourly").addEventListener("click", () => setMode("hourly"));
-    $("modeSalary").addEventListener("click", () => setMode("salary"));
+    $("modeHourly").addEventListener("click", () => showMode("hourly"));
+    $("modeSalary").addEventListener("click", () => showMode("salary"));
+    $("modeOvertime").addEventListener("click", () => showMode("overtime"));
 
-    // --- Calculation ---
-    function calc(){
+    function periodsPerYear(period){
+      switch(period){
+        case "weekly": return 52;
+        case "biweekly": return 26;
+        case "semimonthly": return 24;
+        case "monthly": return 12;
+        default: return 52;
+      }
+    }
+
+    // Helpful defaults when period changes
+    function defaultRegularHours(period){
+      // Typical full-time equivalents per pay period (40hr/week basis)
+      switch(period){
+        case "weekly": return 40;
+        case "biweekly": return 80;
+        case "semimonthly": return (40 * 52) / 24; // 86.666...
+        case "monthly": return (40 * 52) / 12;     // 173.333...
+        default: return 40;
+      }
+    }
+
+    function renderNa(){
+      // hourly results
+      $("annualOut").textContent = "$0";
+      $("monthlyOut").textContent = "$0";
+      $("weeklyOut").textContent = "$0";
+      $("annualMini").textContent = "";
+      $("monthlyMini").textContent = "";
+      $("weeklyMini").textContent = "";
+
+      // salary results
+      $("annualOut2").textContent = "$0";
+      $("monthlyOut2").textContent = "$0";
+      $("weeklyOut2").textContent = "$0";
+      $("hourlyOut2").textContent = "$0.00";
+      $("annualMini2").textContent = "";
+      $("monthlyMini2").textContent = "";
+      $("weeklyMini2").textContent = "";
+      $("hourlyMini2").textContent = "";
+
+      // overtime results
+      $("regularPayOut").textContent = "$0";
+      $("overtimePayOut").textContent = "$0";
+      $("totalPayOut").textContent = "$0";
+      $("annualizedOut").textContent = "$0";
+      $("regularPayMini").textContent = "";
+      $("overtimePayMini").textContent = "";
+      $("totalPayMini").textContent = "";
+      $("annualizedMini").textContent = "";
+    }
+
+    function calcHourlyToSalary(){
+      const hr = toNumber($("hourlyRate").value);
       const hpw = toNumber($("hoursPerWeek").value);
       const wpy = toNumber($("weeksPerYear").value);
 
-      // Basic validation
-      if (!Number.isFinite(hpw) || !Number.isFinite(wpy) || hpw <= 0 || wpy <= 0){
-        setStatus("Check inputs");
-        renderNa();
-        return;
-      }
+      if (!Number.isFinite(hr) || hr < 0){ setStatus("Enter hourly"); renderNa(); return; }
+      if (!Number.isFinite(hpw) || !Number.isFinite(wpy) || hpw <= 0 || wpy <= 0){ setStatus("Check inputs"); renderNa(); return; }
 
-      if (mode === "hourly"){
-        const hr = toNumber($("hourlyRate").value);
-        if (!Number.isFinite(hr) || hr < 0){
-          setStatus("Enter hourly");
-          renderNa();
-          return;
-        }
-        const annual = hr * hpw * wpy;
-        const monthly = annual / 12;
-        const weekly = annual / wpy;
+      const annual = hr * hpw * wpy;
+      const monthly = annual / 12;
+      const weekly = annual / wpy;
 
-        $("annualOut").textContent = money(annual);
-        $("monthlyOut").textContent = money(monthly);
-        $("weeklyOut").textContent = money(weekly);
+      $("annualOut").textContent = money0(annual);
+      $("monthlyOut").textContent = money0(monthly);
+      $("weeklyOut").textContent = money0(weekly);
 
-        $("annualMini").textContent = `${money2(hr)} × ${hpw} hrs × ${wpy} wks`;
-        $("monthlyMini").textContent = `${money(annual)} ÷ 12`;
-        $("weeklyMini").textContent = `${money(annual)} ÷ ${wpy}`;
+      $("annualMini").textContent = `${money2(hr)} × ${hpw} hrs × ${wpy} wks`;
+      $("monthlyMini").textContent = `${money0(annual)} ÷ 12`;
+      $("weeklyMini").textContent = `${money0(annual)} ÷ ${wpy}`;
 
-        setStatus("Updated");
-        return;
-      }
+      setStatus("Updated");
+    }
 
-      // salary → hourly
+    function calcSalaryToHourly(){
       const sal = toNumber($("annualSalary").value);
-      if (!Number.isFinite(sal) || sal < 0){
-        setStatus("Enter salary");
-        renderNa();
-        return;
-      }
+      const hpw = toNumber($("hoursPerWeek2").value);
+      const wpy = toNumber($("weeksPerYear2").value);
+
+      if (!Number.isFinite(sal) || sal < 0){ setStatus("Enter salary"); renderNa(); return; }
+      if (!Number.isFinite(hpw) || !Number.isFinite(wpy) || hpw <= 0 || wpy <= 0){ setStatus("Check inputs"); renderNa(); return; }
 
       const hourly = sal / (hpw * wpy);
       const monthly = sal / 12;
       const weekly = sal / wpy;
 
-      $("annualOut").textContent = money(sal);
-      $("monthlyOut").textContent = money(monthly);
-      $("weeklyOut").textContent = money(weekly);
+      $("annualOut2").textContent = money0(sal);
+      $("monthlyOut2").textContent = money0(monthly);
+      $("weeklyOut2").textContent = money0(weekly);
+      $("hourlyOut2").textContent = money2(hourly);
 
-      $("hourlyOut").textContent = money2(hourly);
-
-      $("annualMini").textContent = `Annual salary`;
-      $("monthlyMini").textContent = `${money(sal)} ÷ 12`;
-      $("weeklyMini").textContent = `${money(sal)} ÷ ${wpy}`;
-      $("hourlyMini").textContent = `${money(sal)} ÷ (${hpw} × ${wpy})`;
+      $("annualMini2").textContent = `Annual salary`;
+      $("monthlyMini2").textContent = `${money0(sal)} ÷ 12`;
+      $("weeklyMini2").textContent = `${money0(sal)} ÷ ${wpy}`;
+      $("hourlyMini2").textContent = `${money0(sal)} ÷ (${hpw} × ${wpy})`;
 
       setStatus("Updated");
     }
 
-    function renderNa(){
-      $("annualOut").textContent = "$0";
-      $("monthlyOut").textContent = "$0";
-      $("weeklyOut").textContent = "$0";
-      $("hourlyOut").textContent = "$0.00";
-      $("annualMini").textContent = "";
-      $("monthlyMini").textContent = "";
-      $("weeklyMini").textContent = "";
-      $("hourlyMini").textContent = "";
+    function calcOvertime(){
+      const hr = toNumber($("otHourlyRate").value);
+      const period = $("payPeriod").value;
+      const regHrs = toNumber($("regularHours").value);
+      const otHrs = toNumber($("overtimeHours").value);
+
+      let mult = toNumber($("otMultiplier").value);
+      if ($("otMultiplier").value === "custom"){
+        mult = toNumber($("customMultiplier").value);
+      }
+
+      if (!Number.isFinite(hr) || hr < 0){ setStatus("Enter hourly"); renderNa(); return; }
+      if (!Number.isFinite(regHrs) || regHrs < 0 || !Number.isFinite(otHrs) || otHrs < 0){ setStatus("Check hours"); renderNa(); return; }
+      if (!Number.isFinite(mult) || mult <= 0){ setStatus("Check multiplier"); renderNa(); return; }
+
+      const regularPay = hr * regHrs;
+      const overtimePay = hr * otHrs * mult;
+      const total = regularPay + overtimePay;
+      const ppy = periodsPerYear(period);
+      const annualized = total * ppy;
+
+      $("regularPayOut").textContent = money0(regularPay);
+      $("overtimePayOut").textContent = money0(overtimePay);
+      $("totalPayOut").textContent = money0(total);
+      $("annualizedOut").textContent = money0(annualized);
+
+      $("regularPayMini").textContent = `${money2(hr)} × ${regHrs} hrs`;
+      $("overtimePayMini").textContent = `${money2(hr)} × ${otHrs} hrs × ${mult}×`;
+      $("totalPayMini").textContent = `${money0(regularPay)} + ${money0(overtimePay)}`;
+      $("annualizedMini").textContent = `${money0(total)} × ${ppy} pay periods`;
+
+      setStatus("Updated");
     }
 
-    // live updates
-    ["hourlyRate","annualSalary","hoursPerWeek","weeksPerYear"].forEach(id=>{
-      const el = $(id);
-      el.addEventListener("input", calc);
-      el.addEventListener("change", calc);
+    function calcAll(){
+      if (mode === "hourly") return calcHourlyToSalary();
+      if (mode === "salary") return calcSalaryToHourly();
+      return calcOvertime();
+    }
+
+    // Overtime multiplier handling
+    $("otMultiplier").addEventListener("change", () => {
+      const isCustom = $("otMultiplier").value === "custom";
+      $("customMultWrap").style.display = isCustom ? "block" : "none";
+      calcAll();
     });
 
-    // "Updated today" label
+    // Pay period default hours (helpful but editable)
+    $("payPeriod").addEventListener("change", () => {
+      const period = $("payPeriod").value;
+      const suggested = defaultRegularHours(period);
+      // Only auto-fill if the user hasn't customized much (simple heuristic)
+      const current = toNumber($("regularHours").value);
+      if (!Number.isFinite(current) || current === 40 || current === 80 || current === 86.67 || current === 173.33){
+        $("regularHours").value = suggested.toFixed(suggested % 1 === 0 ? 0 : 2);
+      }
+      calcAll();
+    });
+
+    // live updates
+    [
+      "hourlyRate","hoursPerWeek","weeksPerYear",
+      "annualSalary","hoursPerWeek2","weeksPerYear2",
+      "otHourlyRate","regularHours","overtimeHours","customMultiplier"
+    ].forEach(id=>{
+      const el = $(id);
+      el.addEventListener("input", calcAll);
+      el.addEventListener("change", calcAll);
+    });
+
+    // updated badge + year
     const d = new Date();
     $("year").textContent = String(d.getFullYear());
     $("updatedDate").textContent = d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"numeric" });
 
-    // initial
-    calc();
+    // init
+    showMode("hourly");
   </script>
 </body>
 </html>
